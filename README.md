@@ -12,15 +12,15 @@
 
 ## 02-20
 - [x] .read
-- [ ] .header
-- [ ] .mode
-- [ ] .width
-- [ ] .print
-- [ ] SELECT
-- [ ] SQL运算符
-- [ ] WHERE
-- [ ] 子句
-- [ ] DELETE
+- [x] .header
+- [x] .mode
+- [x] .width
+- [x] .print
+- [x] SELECT
+- [x] SQL运算符
+- [x] WHERE
+- [x] 子句
+- [x] DELETE
 
 ## 02-21
 - [ ] SQL表达式
