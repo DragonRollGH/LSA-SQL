@@ -45,4 +45,3 @@ SELECT * FROM DATE;
 .print "\n设为0则自动选择列宽，但由于对汉语宽度计算有误导致显示不全:"
 .width 0 0 0 0 0
 SELECT * FROM DATE;
-
