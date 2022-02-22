@@ -12,7 +12,7 @@ WHERE: 对记录按[condition]的条件筛选, 返回给下一个语句
 表达式: 可以理解为一种普通函数, 其执行顺序依托于所在的语句
 
 执行顺序: 
-括号内内容 > FROM > WHERE > 聚合函数 > SELECT
+括号内内容 > FROM > WHERE > 聚合函数 > SELECT = DELETE > INSERT = UPDATE
 
 COMPANY:
 ID          NAME        AGE         ADDRESS     SALARY
