@@ -25,6 +25,7 @@ ID          NAME        AGE         ADDRESS     SALARY
 6           Kim         22          South-Hall  45000.0
 7           James       24          Houston     10000.0
 
+
 语句分析: 
 例1:
 SELECT *
@@ -84,6 +85,10 @@ FROM COMPANY;
     至于为什么返回ID为7的记录而非ID为1或者23456的记录, 要问sqlite开发者, 他总要返回一条记录的嘛, 我也是试过才知道的
 3. 第一行SELECT, 输出ID为7的记录的AVG(SALARY)字段的值
 
+ID          NAME        AGE         ADDRESS     SALARY      AVG(SALARY)
+----------  ----------  ----------  ----------  ----------  -----------
+7           James       24          Houston     10000.0     12345.0
+
 
 例6:
 SELECT (MAX(SALARY) - MIN(SALARY))
@@ -129,14 +134,14 @@ WHERE LENGTH(ADDRESS) ==
 
 
 填空:
-1. 先执行五六行括号内容, 第六行FROM, 返回所有七条记录给[  ]
+1. 先执行五六行括号内容, 第六行FROM, 返回所有七条记录给[ WHERE（第三行） ]
 2. 第五行SELECT, 嵌套函数从内往外执行, 先计算LENGTH函数, 得到七条记录的ADDRESS字段的长度
-    然后聚合函数, 返回一条包含MIN(LENGTH(ADDRESS))字段的且ID为[  ]的记录
-    然后SELECT返回新字段的值[  ]
-3. 所以五六行整个括号等价于[  ]
-4. 第二行FROM, 返回所有七条记录给[  ]
-5. 第三行WHERE, 返回满足条件的ID为[  ]的记录
-6. 第一行SELECT, 输出ID为[  ]的[  ]字段的值, 即[  ]
+    然后聚合函数, 返回一条包含MIN(LENGTH(ADDRESS))字段的且ID为[ 2和5 ]的记录
+    然后SELECT返回新字段的值[ 5 ]
+3. 所以五六行整个括号等价于[ 5 ]
+4. 第二行FROM, 返回所有七条记录给[ WHERE（第三行） ]
+5. 第三行WHERE, 返回满足条件的ID为[ 2和5 ]的记录
+6. 第一行SELECT, 输出ID为[ 2和5 ]的[ NAME ]字段的值, 即[ Allen和David ]
 
 
 题2:
@@ -165,29 +170,45 @@ WHERE ID !=
         WHERE ID == 
         (
             SELECT MAX(ID)
-            FROM COMPANY;
+            FROM COMPANY
         )
     )
-)
+);
 
 填空:
-1. 嵌套括号从内往外执行, 先执行13,14行括号内容, 第14行FROM, 返回所有八条记录给[  ]
-2. 第13行聚合MAX, 返回带有新的[  ]字段的记录给[  ]
-3. 第13行SELECT, 返回新的字段的值, 所以13,14行括号等价于[  ]
-4. 再执行9-11行括号内容, 第10行FROM, 返回所有八条记录给[  ]
-5. 第[  ]行[  ]语句, 返回满足条件的ID为[  ]的数据给[  ]
-6. 第[  ]行[  ]语句, 输出[  ]字段的值, 所以9-15行括号等价于[  ]
-7. 再执行5-7行括号内容, 第6行FROM返回所有八条记录给[  ]
-8. 第[  ]行[  ]语句, 返回ID为[  ]的数据给[  ]
-9. 聚合函数MIN, 返回带有新的[  ]字段的记录给[  ]
-10. 第[  ]行[  ]语句, 返回新的字段的值, 所以5-16行括号等价于[  ]
-11. 第[  ]行[  ]语句, 返回所有八条记录给[  ]
-12. 第[  ]行[  ]语句, 返回满足条件的ID为[  ]的记录给[  ]
-13. 第一行SELECT, 输出ID为[  ]的所有字段的值
+1. 嵌套括号从内往外执行, 先执行13,14行括号内容, 第14行FROM, 返回所有八条记录给[ 聚合函数MAX(第13行) ]
+2. 第13行聚合MAX, 返回带有新的[ ID ]字段的记录给[ SELECT（第13行） ]偷偷改被我看到啦，xbxbxbxbxb！
+3. 第13行SELECT, 返回新的字段的值, 所以13,14行括号等价于[ 8 ]
+4. 再执行9-11行括号内容, 第10行FROM, 返回所有八条记录给[ WHERE（第11行） ]
+5. 第[ 11 ]行[ WHERE ]语句, 返回满足条件的ID为[ 8 ]的数据给[ SELECT ]
+6. 第[ 9 ]行[ SELECT ]语句, 输出[  NAME ]字段的值, 所以9-15行括号等价于[ Kim ]
+7. 再执行5-7行括号内容, 第6行FROM返回所有八条记录给[  WHERE(第7行) ]
+8. 第[ 7 ]行[ WHERE ]语句, 返回ID为[ 6,7,8 ]的数据给[ 聚合函数MIN(第5行) ]
+9. 聚合函数MIN, 返回带有新的[ ID ]字段的记录给[ WHERE(第3行) ]
+10. 第[ 3 ]行[ WHERE ]语句, 返回新的字段的值, 所以5-16行括号等价于[ 6 ]
+11. 第[ 2 ]行[ FROM ]语句, 返回所有八条记录给[ WHERE（第3行） ]
+12. 第[ 3 ]行[ WHERE ]语句, 返回满足条件的ID为[ 7,8 ]的记录给[ SELECT（第1行） ]
+13. 第一行SELECT, 输出ID为[ 7,8 ]的所有字段的值
 
 
 题3:
-参考题2, 用法DELETE语句删除多余的重复记录
+参考题2, 用DELETE语句删除多余的重复记录
 DELETE FROM table_name
 WHERE [condition];
 
+DELETE FROM COMPANY
+WHERE ID != 
+(
+   SELECT MIN(ID) 
+   FROM COMPANY
+   WHERE NAME == 
+   (
+       SELECT NAME
+       FROM COMPANY
+       WHERE ID ==
+       (
+          SELECT MAX(ID)
+          FROM COMPANY
+       )
+    )
+);
