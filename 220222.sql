@@ -134,7 +134,7 @@ WHERE LENGTH(ADDRESS) ==
 
 
 填空:
-1. 先执行五六行括号内容, 第六行FROM, 返回所有七条记录给[ WHERE（第三行） ]
+1. 先执行五六行括号内容, 第六行FROM, 返回所有七条记录给[ SELECT（第五行） ]
 2. 第五行SELECT, 嵌套函数从内往外执行, 先计算LENGTH函数, 得到七条记录的ADDRESS字段的长度
     然后聚合函数, 返回一条包含MIN(LENGTH(ADDRESS))字段的且ID为[ 2和5 ]的记录
     然后SELECT返回新字段的值[ 5 ]
@@ -173,6 +173,16 @@ WHERE ID !=
             FROM COMPANY
         )
     )
+)
+AND NAME ==
+(   
+    SELECT NAME 
+    FROM COMPANY 
+    WHERE ID == 
+    (
+       SELECT MAX(ID) 
+       FROM COMPANY 
+    )
 );
 
 填空:
@@ -181,11 +191,11 @@ WHERE ID !=
 3. 第13行SELECT, 返回新的字段的值, 所以13,14行括号等价于[ 8 ]
 4. 再执行9-11行括号内容, 第10行FROM, 返回所有八条记录给[ WHERE（第11行） ]
 5. 第[ 11 ]行[ WHERE ]语句, 返回满足条件的ID为[ 8 ]的数据给[ SELECT ]
-6. 第[ 9 ]行[ SELECT ]语句, 输出[  NAME ]字段的值, 所以9-15行括号等价于[ Kim ]
+6. 第[ 9 ]行[ SELECT ]语句, 输出[  NAME ]字段的值, 所以9-15行括号等价于[ 'Kim' ]
 7. 再执行5-7行括号内容, 第6行FROM返回所有八条记录给[  WHERE(第7行) ]
 8. 第[ 7 ]行[ WHERE ]语句, 返回ID为[ 6,7,8 ]的数据给[ 聚合函数MIN(第5行) ]
-9. 聚合函数MIN, 返回带有新的[ ID ]字段的记录给[ WHERE(第3行) ]
-10. 第[ 3 ]行[ WHERE ]语句, 返回新的字段的值, 所以5-16行括号等价于[ 6 ]
+9. 聚合函数MIN, 返回带有新的[ MIN(ID) ]字段的记录给[ SELECT(第5行) ]
+10. 第[ 5 ]行[ SELECT ]语句, 返回新的字段的值, 所以5-16行括号等价于[ 6 ]
 11. 第[ 2 ]行[ FROM ]语句, 返回所有八条记录给[ WHERE（第3行） ]
 12. 第[ 3 ]行[ WHERE ]语句, 返回满足条件的ID为[ 7,8 ]的记录给[ SELECT（第1行） ]
 13. 第一行SELECT, 输出ID为[ 7,8 ]的所有字段的值
@@ -210,5 +220,15 @@ WHERE ID !=
           SELECT MAX(ID)
           FROM COMPANY
        )
+    )
+)
+AND NAME ==
+(
+   SELECT NAME
+   FROM COMPANY
+   WHERE ID ==
+   (  
+      SELECT MAX(ID)
+      FROM COMPANY
     )
 );
